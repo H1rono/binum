@@ -1,0 +1,13 @@
+[package]
+name = "binum"
+description = "integer emulation with boolean expression"
+repository = "https://github.com/h1rono/binum"
+readme = "README.md"
+version = "0.1.0"
+edition = "2021"
+authors = ["H1rono <hronok66@gmail.com>"]
+license = "MIT"
+license-file = "LICENSE"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
