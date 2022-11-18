@@ -6,7 +6,7 @@ mod bool_basics {
     use Boolean::*;
 
     #[test]
-    fn test_add() {
+    fn test_and() {
         assert_eq!(False & False, False);
         assert_eq!(False & True, False);
         assert_eq!(True & False, False);
