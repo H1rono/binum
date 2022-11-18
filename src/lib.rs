@@ -1,6 +1,7 @@
 use std::convert::From;
 use std::fmt;
 use std::ops;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Boolean {
@@ -89,6 +90,31 @@ impl From<Boolean> for bool {
         match item {
             Boolean::False => false,
             Boolean::True => true,
+        }
+    }
+}
+
+impl From<bool> for Boolean {
+    fn from(item: bool) -> Self {
+        match item {
+            false => Self::False,
+            true => Self::True,
+        }
+    }
+}
+
+impl FromStr for Boolean {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let len = s.len();
+        let s = s.to_lowercase();
+        if len == 4 && s == "true" {
+            Ok(Self::True)
+        } else if len == 5 && s == "false" {
+            Ok(Self::False)
+        } else {
+            Err(format!("`{}` cannot be converted to Boolean", s))
         }
     }
 }
