@@ -1,5 +1,5 @@
 use std::cmp::Ordering::*;
-use std::{cmp, fmt};
+use std::{cmp, fmt, ops};
 
 use crate::Boolean;
 
@@ -120,5 +120,108 @@ impl cmp::Ord for UInt {
 impl cmp::PartialOrd for UInt {
     fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
         Some(self.cmp(other))
+    }
+}
+
+impl ops::BitAnd for UInt {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self::Output {
+        let len = cmp::min(self.max_bit_digit(), rhs.max_bit_digit());
+        let bin1 = self.binary();
+        let bin2 = rhs.binary();
+        let binary: Vec<_> = (0..len)
+            .map(|i| {
+                (
+                    bin1.get(i).unwrap_or(&Boolean::False),
+                    bin2.get(i).unwrap_or(&Boolean::False),
+                )
+            })
+            .map(|(&b1, &b2)| b1 & b2)
+            .collect();
+        Self::Output { _binary: binary }
+    }
+}
+
+impl ops::BitAndAssign for UInt {
+    fn bitand_assign(&mut self, rhs: Self) {
+        let len = cmp::min(self.max_bit_digit(), rhs.max_bit_digit());
+        self._binary.resize(len, Boolean::False);
+        let bin1 = &mut self._binary;
+        let bin2 = rhs.binary();
+        let it = bin1.iter_mut().zip(bin2.iter()).take(len);
+        for (b1, b2) in it {
+            *b1 &= *b2;
+        }
+    }
+}
+
+impl ops::BitOr for UInt {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self::Output {
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        let bin1 = self.binary();
+        let bin2 = rhs.binary();
+        let binary: Vec<_> = (0..len)
+            .map(|i| {
+                (
+                    bin1.get(i).unwrap_or(&Boolean::False),
+                    bin2.get(i).unwrap_or(&Boolean::False),
+                )
+            })
+            .map(|(&b1, &b2)| b1 | b2)
+            .collect();
+        Self::Output { _binary: binary }
+    }
+}
+
+impl ops::BitOrAssign for UInt {
+    fn bitor_assign(&mut self, rhs: Self) {
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        self._binary.resize(len, Boolean::False);
+        let bin1 = &mut self._binary;
+        let bin2 = rhs.binary();
+        let it = bin1.iter_mut().enumerate().take(len);
+        for (i, b) in it {
+            *b |= *bin2.get(i).unwrap_or(&Boolean::False);
+        }
+    }
+}
+
+impl ops::BitXor for UInt {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        let bin1 = self.binary();
+        let bin2 = rhs.binary();
+        let mut binary: Vec<_> = (0..len)
+            .map(|i| {
+                (
+                    bin1.get(i).unwrap_or(&Boolean::False),
+                    bin2.get(i).unwrap_or(&Boolean::False),
+                )
+            })
+            .map(|(&b1, &b2)| b1 ^ b2)
+            .collect();
+        for i in (0..len).rev() {
+            if binary[i].into() {
+                binary.resize(i + 1, Boolean::False);
+                break;
+            }
+        }
+        Self::Output { _binary: binary }
+    }
+}
+
+impl ops::BitXorAssign for UInt {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        let bin1 = &mut self._binary;
+        let bin2 = rhs.binary();
+        bin1.resize(len, Boolean::False);
+        let it = bin1.iter_mut().enumerate().take(len);
+        for (i, b) in it {
+            *b ^= *bin2.get(i).unwrap_or(&Boolean::False);
+        }
+        self.trim_mut();
     }
 }
