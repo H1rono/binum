@@ -3,7 +3,7 @@ use std::{cmp, fmt};
 
 use crate::Boolean;
 
-#[derive(Eq)]
+#[derive(Eq, Clone)]
 pub struct UInt {
     _binary: Vec<Boolean>,
 }
