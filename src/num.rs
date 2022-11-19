@@ -1,5 +1,9 @@
+use std::cmp::Ordering::*;
+use std::{cmp, fmt};
+
 use crate::Boolean;
 
+#[derive(Eq)]
 pub struct UInt {
     _binary: Vec<Boolean>,
 }
@@ -68,5 +72,53 @@ impl From<UInt> for u64 {
             res |= u64::from(<Boolean as std::convert::Into<bool>>::into(b)) << i;
         }
         res
+    }
+}
+
+impl fmt::Debug for UInt {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("UInt")
+            .field("binary", &self._binary)
+            .finish()
+    }
+}
+
+impl cmp::PartialEq for UInt {
+    fn eq(&self, other: &Self) -> bool {
+        let len = self.max_bit_digit();
+        if len != other.max_bit_digit() {
+            return false;
+        }
+        self.binary()[..len]
+            .iter()
+            .zip(other.binary()[..len].iter())
+            .all(|(&b1, &b2)| b1 == b2)
+    }
+}
+
+impl cmp::Ord for UInt {
+    fn cmp(&self, other: &Self) -> cmp::Ordering {
+        let len = self.max_bit_digit();
+        match len.cmp(&other.max_bit_digit()) {
+            Equal => {
+                let bin1 = self.binary();
+                let bin2 = other.binary();
+                (0..len)
+                    .rev()
+                    .map(|i| (bin1[i] as u8, bin2[i] as u8))
+                    .map(|(b1, b2)| b1.cmp(&b2))
+                    .fold(Equal, |acc, m| match (acc, m) {
+                        (Equal, x) => x,
+                        (x, _) => x,
+                    })
+            }
+            x => x,
+        }
+    }
+}
+
+impl cmp::PartialOrd for UInt {
+    fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
