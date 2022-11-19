@@ -1,5 +1,3 @@
-extern crate binum;
-
 #[cfg(test)]
 mod bool_basics {
     use std::str::FromStr;
