@@ -128,15 +128,18 @@ mod uint_ops_int {
     fn test_sub() {
         // basic
         assert_eq!(UInt::from(16) - UInt::from(9), UInt::from(7));
+        assert_eq!(UInt::from(1) - UInt::from(1), UInt::from(0));
         // corner case
         let n0 = UInt::from(0);
         let n1 = UInt::from(u64::MAX);
         assert_eq!(n0.clone() - n0.clone(), UInt::new([]));
-        assert_eq!(n1 - n0, UInt::new([True; u64::BITS as usize]));
+        assert_eq!(n1 - n0.clone(), UInt::new([True; u64::BITS as usize]));
         // unity
         let unit = UInt::from(0);
-        let n2 = UInt::from(0b10011011);
-        assert_eq!(n2.clone() - unit, n2);
+        let n1 = UInt::from(0b10011011);
+        assert_eq!(n1.clone() - unit, n1);
+        // inverse
+        assert_eq!(n1.clone() - n1, n0);
     }
 
     #[test]
@@ -161,9 +164,12 @@ mod uint_ops_int {
         assert_eq!(n1, UInt::new([True; u64::BITS as usize]));
         // unity
         let unit = UInt::from(0);
-        let mut n2 = UInt::from(0b10011011);
-        n2 -= unit;
-        assert_eq!(n2, UInt::from(0b10011011));
+        let mut n1 = UInt::from(0b10011011);
+        n1 -= unit.clone();
+        assert_eq!(n1, UInt::from(0b10011011));
+        // inverse
+        n1 -= n1.clone();
+        assert_eq!(n1, unit);
     }
 
     #[test]
@@ -185,7 +191,9 @@ mod uint_ops_int {
         // unity
         let unit = UInt::from(1);
         let n2 = UInt::from(0b10011011);
-        assert_eq!(n2.clone() / unit, n2);
+        assert_eq!(n2.clone() / unit.clone(), n2);
+        // inverse
+        assert_eq!(n2.clone() / n2, unit);
     }
 
     #[test]
@@ -210,9 +218,12 @@ mod uint_ops_int {
         assert_eq!(n2, UInt::new([True; u64::BITS as usize]));
         // unity
         let unit = UInt::from(1);
-        let mut n2 = UInt::from(0b10011011);
-        n2 /= unit;
-        assert_eq!(n2, UInt::from(0b10011011));
+        let mut n1 = UInt::from(0b10011011);
+        n1 /= unit.clone();
+        assert_eq!(n1, UInt::from(0b10011011));
+        // inverse
+        n1 /= n1.clone();
+        assert_eq!(n1, unit);
     }
 
     #[test]
@@ -232,9 +243,9 @@ mod uint_ops_int {
         let n1 = UInt::from(u64::MAX);
         assert_eq!(n0.clone() % n0.clone(), UInt::new([]));
         assert_eq!(n1 % n0, UInt::new([]));
-        // idempotency
+        // (maybe) inverse
         let n1 = UInt::from(0b10011011);
-        assert_eq!(n1.clone() % n1.clone(), n1);
+        assert_eq!(n1.clone() % n1, UInt::from(0));
     }
 
     #[test]
@@ -255,12 +266,12 @@ mod uint_ops_int {
         let mut n2 = UInt::from(u64::MAX);
         n1 %= n1.clone();
         assert_eq!(n1, UInt::new([]));
-        n2 %= n1;
+        n2 %= UInt::from(1);
         assert_eq!(n2, UInt::new([]));
-        // idempotency
+        // (maybe) inverse
         let mut n1 = UInt::from(0b10011011);
         n1 %= n1.clone();
-        assert_eq!(n1, UInt::from(0b10011011));
+        assert_eq!(n1, UInt::from(0));
     }
 
     #[test]
