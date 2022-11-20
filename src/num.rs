@@ -259,3 +259,139 @@ impl ops::ShrAssign for UInt {
         self._binary = Vec::from(&self._binary[rhs as usize..]);
     }
 }
+
+impl ops::Add for UInt {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        let bin1 = self.binary();
+        let bin2 = rhs.binary();
+        let dig1 = |i: usize| *bin1.get(i).unwrap_or(&Boolean::False);
+        let dig2 = |i: usize| *bin2.get(i).unwrap_or(&Boolean::False);
+        let mut sums = vec![];
+        sums.push(dig1(0) ^ dig2(0));
+        let mut carry = dig1(0) & dig2(0);
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        for i in 0..len {
+            let (a, b, c) = (dig1(i + 1), dig2(i + 1), carry);
+            sums.push(a ^ b ^ c);
+            carry = (a & b) | (b & c) | (c & a)
+        }
+        let mut res = Self { _binary: sums };
+        res.trim_mut();
+        res
+    }
+}
+
+impl ops::AddAssign for UInt {
+    fn add_assign(&mut self, rhs: Self) {
+        let len = cmp::max(self.max_bit_digit(), rhs.max_bit_digit());
+        let bin1 = &mut self._binary;
+        let bin2 = rhs.binary();
+        let dig2 = |i: usize| *bin2.get(i).unwrap_or(&Boolean::False);
+        bin1.resize(len + 1, Boolean::False);
+        let mut carry = bin1[0] & dig2(0);
+        bin1[0] ^= dig2(0);
+        for i in 1..=len {
+            let (a, b, c) = (bin1[i], dig2(i), carry);
+            bin1[i] = a ^ b ^ c;
+            carry = (a & b) | (b & c) | (c & a);
+        }
+        self.trim_mut();
+    }
+}
+
+impl ops::Mul for UInt {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut res = UInt::new([]);
+        let bin2 = rhs.binary();
+        let it = bin2.iter().enumerate();
+        for (i, b) in it {
+            if !bool::from(*b) {
+                continue;
+            }
+            res += self.clone() << UInt::from(i as u64);
+        }
+        res
+    }
+}
+
+impl ops::MulAssign for UInt {
+    fn mul_assign(&mut self, rhs: Self) {
+        self._binary = (self.clone() * rhs)._binary;
+    }
+}
+
+impl ops::Sub for UInt {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        let n1 = UInt::from(1);
+        let mut le = UInt::from(0);
+        let mut gt = self.clone() + n1.clone();
+        if rhs.clone() + le.clone() > self {
+            panic!("attempt to subtract with overflow");
+        }
+        // binary search
+        while gt > le.clone() + n1.clone() {
+            let mid = (gt.clone() + le.clone()) >> n1.clone();
+            if mid.clone() + rhs.clone() > self {
+                gt = mid;
+            } else {
+                le = mid;
+            }
+        }
+        le
+    }
+}
+
+impl ops::SubAssign for UInt {
+    fn sub_assign(&mut self, rhs: Self) {
+        self._binary = (self.clone() - rhs)._binary;
+    }
+}
+
+impl ops::Div for UInt {
+    type Output = Self;
+    fn div(self, rhs: Self) -> Self::Output {
+        let n1 = UInt::from(1);
+        let mut le = UInt::from(0);
+        let mut gt = self.clone() + n1.clone();
+        if rhs == UInt::from(0) {
+            panic!("attempt to divide by zero");
+        }
+        // binary search
+        while gt > le.clone() + n1.clone() {
+            let mid = (gt.clone() + le.clone()) >> n1.clone();
+            if mid.clone() * rhs.clone() > self {
+                gt = mid;
+            } else {
+                le = mid;
+            }
+        }
+        le
+    }
+}
+
+impl ops::DivAssign for UInt {
+    fn div_assign(&mut self, rhs: Self) {
+        self._binary = (self.clone() / rhs)._binary;
+    }
+}
+
+impl ops::Rem for UInt {
+    type Output = Self;
+    fn rem(self, rhs: Self) -> Self::Output {
+        // d, m = divmod(self, rhs)
+        // self = rhs * d + m
+        // m = self - rhs * d
+        let d = self.clone() / rhs.clone();
+        let r = d * rhs;
+        self - r
+    }
+}
+
+impl ops::RemAssign for UInt {
+    fn rem_assign(&mut self, rhs: Self) {
+        self._binary = (self.clone() % rhs)._binary;
+    }
+}
