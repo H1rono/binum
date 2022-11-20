@@ -164,4 +164,80 @@ mod uint_ops {
         n5 ^= n6;
         assert_eq!(n4, n5); // (pseudo) associativity
     }
+
+    #[test]
+    fn test_shl() {
+        // basics
+        assert_eq!(UInt::from(3) << UInt::from(2), UInt::from(12));
+        // corner case
+        let left = UInt::from(1) << UInt::from(u64::BITS as u64);
+        let right = UInt::new(
+            format!("1{:>064}", 0)
+                .chars()
+                .rev()
+                .map(|c| Boolean::from(c == '1'))
+                .collect::<Vec<_>>(),
+        );
+        assert_eq!(left, right);
+        // unity
+        let unit = UInt::from(0);
+        let n = UInt::from(9);
+        assert_eq!(n.clone() << unit, n);
+    }
+
+    #[test]
+    fn test_shl_assign() {
+        // basics
+        let mut n = UInt::from(3);
+        n <<= UInt::from(2);
+        assert_eq!(n, UInt::from(12));
+        // corner case
+        let mut left = UInt::from(1);
+        left <<= UInt::from(u64::BITS as u64);
+        let right = UInt::new(
+            format!("1{:>064}", 0)
+                .chars()
+                .rev()
+                .map(|c| Boolean::from(c == '1'))
+                .collect::<Vec<_>>(),
+        );
+        assert_eq!(left, right);
+        // unity
+        let unit = UInt::from(0);
+        let mut n = UInt::from(9);
+        n <<= unit;
+        assert_eq!(n, UInt::from(9));
+    }
+
+    #[test]
+    fn test_shr() {
+        // basics
+        assert_eq!(UInt::from(0b1101) >> UInt::from(2), UInt::from(0b11));
+        // corner case
+        let left = UInt::from(1) >> UInt::from(10);
+        let right = UInt::from(0);
+        assert_eq!(left, right);
+        // unity
+        let unit = UInt::from(0);
+        let n = UInt::from(9);
+        assert_eq!(n.clone() >> unit, n);
+    }
+
+    #[test]
+    fn test_shr_assign() {
+        // basics
+        let mut n = UInt::from(0b1101);
+        n >>= UInt::from(2);
+        assert_eq!(n, UInt::from(0b11));
+        // corner case
+        let mut left = UInt::from(1);
+        left >>= UInt::from(10);
+        let right = UInt::from(0);
+        assert_eq!(left, right);
+        // unity
+        let unit = UInt::from(0);
+        let mut n = UInt::from(9);
+        n >>= unit;
+        assert_eq!(n, UInt::from(9));
+    }
 }
