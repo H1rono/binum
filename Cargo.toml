@@ -1,6 +1,6 @@
 [package]
 name = "binum"
-description = "integer emulation with boolean expression"
+description = "integer emulation as a boolena sequence"
 repository = "https://github.com/h1rono/binum"
 readme = "README.md"
 version = "0.1.0"

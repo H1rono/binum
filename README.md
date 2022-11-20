@@ -1,3 +1,3 @@
 # binum
 
-integer emulation with boolean expression
+integer emulation as a boolean sequence
