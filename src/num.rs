@@ -225,3 +225,37 @@ impl ops::BitXorAssign for UInt {
         self.trim_mut();
     }
 }
+
+impl ops::Shl for UInt {
+    type Output = Self;
+    fn shl(self, rhs: Self) -> Self::Output {
+        let rhs: u64 = rhs.into();
+        let mut bin = vec![Boolean::False; rhs as usize];
+        bin.extend_from_slice(self.binary());
+        Self::Output { _binary: bin }
+    }
+}
+
+impl ops::ShlAssign for UInt {
+    fn shl_assign(&mut self, rhs: Self) {
+        let rhs: u64 = rhs.into();
+        let mut bin = vec![Boolean::False; rhs as usize];
+        bin.extend(self._binary.iter());
+        self._binary = bin;
+    }
+}
+
+impl ops::Shr for UInt {
+    type Output = Self;
+    fn shr(self, rhs: Self) -> Self::Output {
+        let rhs = cmp::min(u64::from(rhs) as usize, self.bit_len());
+        Self::new(&self.binary()[rhs..])
+    }
+}
+
+impl ops::ShrAssign for UInt {
+    fn shr_assign(&mut self, rhs: Self) {
+        let rhs = cmp::min(u64::from(rhs) as usize, self.bit_len());
+        self._binary = Vec::from(&self._binary[rhs as usize..]);
+    }
+}
