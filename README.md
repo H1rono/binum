@@ -2,7 +2,7 @@
 
 integer emulation as a boolean sequence
 
-## Useage
+## Usage
 
 **🚧 work in progress 🚧**
 
