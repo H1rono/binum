@@ -274,7 +274,7 @@ impl ops::Add for UInt {
         for i in 0..len {
             let (a, b, c) = (dig1(i + 1), dig2(i + 1), carry);
             sums.push(a ^ b ^ c);
-            carry = (a & b) | (b & c) | (c & a)
+            carry = (a & b) | (b & c) | (c & a);
         }
         let mut res = Self { _binary: sums };
         res.trim_mut();
