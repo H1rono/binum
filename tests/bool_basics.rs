@@ -6,6 +6,12 @@ mod bool_basics {
     use Boolean::*;
 
     #[test]
+    fn test_not() {
+        assert_eq!(!False, True);
+        assert_eq!(!True, False);
+    }
+
+    #[test]
     fn test_and() {
         assert_eq!(False & False, False);
         assert_eq!(False & True, False);
