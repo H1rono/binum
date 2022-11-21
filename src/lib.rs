@@ -1,5 +1,5 @@
 mod boolean;
 pub use boolean::Boolean;
 
-mod num;
-pub use num::UInt;
+mod uint;
+pub use uint::UInt;
