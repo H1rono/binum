@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod uint_ops {
-    use binum::{num::UInt, Boolean};
+    use binum::{Boolean, UInt};
     use Boolean::*;
 
     #[test]

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod uint_basics {
-    use binum::{num::*, Boolean};
+    use binum::{Boolean, UInt};
     use Boolean::*;
 
     const T: Boolean = True;

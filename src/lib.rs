@@ -125,4 +125,5 @@ impl FromStr for Boolean {
     }
 }
 
-pub mod num;
+mod num;
+pub use num::UInt;

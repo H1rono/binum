@@ -1,7 +1,7 @@
 // demonstration: ABC210 A - Cabbages
 //  https://atcoder.jp/contests/abc210/tasks/abc210_a
 
-use binum::num::UInt;
+use binum::UInt;
 
 fn main() {
     let stdin = std::io::stdin();
