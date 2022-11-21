@@ -22,6 +22,17 @@ impl fmt::Display for Boolean {
     }
 }
 
+impl ops::Not for Boolean {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            Boolean::False => Boolean::True,
+            Boolean::True => Boolean::False,
+        }
+    }
+}
+
 impl ops::BitAnd for Boolean {
     type Output = Self;
 
