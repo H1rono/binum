@@ -24,7 +24,6 @@ impl fmt::Display for Boolean {
 
 impl ops::Not for Boolean {
     type Output = Self;
-
     fn not(self) -> Self::Output {
         match self {
             Boolean::False => Boolean::True,
@@ -35,7 +34,6 @@ impl ops::Not for Boolean {
 
 impl ops::BitAnd for Boolean {
     type Output = Self;
-
     fn bitand(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
             (Self::True, Self::True) => Self::True,
@@ -56,7 +54,6 @@ impl ops::BitAndAssign for Boolean {
 
 impl ops::BitOr for Boolean {
     type Output = Self;
-
     fn bitor(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
             (Self::False, Self::False) => Self::False,
@@ -77,7 +74,6 @@ impl ops::BitOrAssign for Boolean {
 
 impl ops::BitXor for Boolean {
     type Output = Self;
-
     fn bitxor(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
             (Self::False, Self::False) | (Self::True, Self::True) => Self::False,
@@ -116,7 +112,6 @@ impl From<bool> for Boolean {
 
 impl FromStr for Boolean {
     type Err = String;
-
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let len = s.len();
         let s = s.to_lowercase();

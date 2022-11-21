@@ -291,10 +291,15 @@ impl ops::AddAssign for UInt {
         bin1.resize(len + 1, Boolean::False);
         let mut carry = bin1[0] & dig2(0);
         bin1[0] ^= dig2(0);
-        for i in 1..=len {
-            let (a, b, c) = (bin1[i], dig2(i), carry);
-            bin1[i] = a ^ b ^ c;
-            carry = (a & b) | (b & c) | (c & a);
+        let it = bin1
+            .iter_mut()
+            .enumerate()
+            .skip(1)
+            .map(|(i, bin)| (bin, dig2(i)));
+        for (bin, b) in it {
+            let a = *bin;
+            *bin = a ^ b ^ carry;
+            carry = (a & b) | (b & carry) | (carry & a);
         }
         self.trim_mut();
     }
