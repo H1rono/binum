@@ -4,6 +4,7 @@ use std::ops;
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
 pub enum Boolean {
     False = 0,
     True,
