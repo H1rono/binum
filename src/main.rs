@@ -19,7 +19,7 @@ fn main() {
     let mut lines = io::stdin().lines();
     let mut stdout = io::stdout();
     stdout
-        .write_all(b"calculate a % b\n")
+        .write_all(b"calculate gcd(a, b)\n")
         .expect("failed to write message");
     stdout.write_all(b"a: ").expect("failed to write message");
     stdout.flush().expect("failed to flush stdout");
@@ -40,7 +40,8 @@ fn main() {
         .expect("please input number");
     let b = UInt::from(b);
     let c = gcd(a, b);
+    let message = format!("gcd(a, b) is {}\n", u64::from(c));
     stdout
-        .write_all(format!("gcd(a, b) is {}", u64::from(c)).as_bytes())
+        .write_all(message.as_bytes())
         .expect("failed to write message");
 }
