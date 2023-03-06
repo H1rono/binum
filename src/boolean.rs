@@ -121,7 +121,7 @@ impl FromStr for Boolean {
         } else if len == 5 && s == "false" {
             Ok(Self::False)
         } else {
-            Err(format!("`{}` cannot be converted to Boolean", s))
+            Err(format!("`{s}` cannot be converted to Boolean"))
         }
     }
 }

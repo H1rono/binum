@@ -204,6 +204,7 @@ impl ops::BitXor for UInt {
             .collect();
         for i in (0..len).rev() {
             if binary[i].into() {
+                #[allow(clippy::suspicious_arithmetic_impl)]
                 binary.resize(i + 1, Boolean::False);
                 break;
             }
@@ -256,7 +257,7 @@ impl ops::Shr for UInt {
 impl ops::ShrAssign for UInt {
     fn shr_assign(&mut self, rhs: Self) {
         let rhs = cmp::min(u64::from(rhs) as usize, self.bit_len());
-        self._binary = Vec::from(&self._binary[rhs as usize..]);
+        self._binary = Vec::from(&self._binary[rhs..]);
     }
 }
 

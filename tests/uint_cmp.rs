@@ -30,14 +30,16 @@ mod uint_cmp {
                 .map(|c| Boolean::from(c == '1'))
                 .collect::<Vec<_>>(),
         );
-        assert!(n1 <= n1); // reflexivity
-        assert!(n1 <= n2 && n2 >= n1 && n1 == n2); // anti-symmetry
+        // reflexivity
+        assert!(n1 <= n1);
+        // anti-symmetry
+        assert!(n1 <= n2 && n2 <= n1 && n1 == n2);
+        // transitivity
         let n3 = UInt::from(315);
         assert!(n1 < n3);
         assert!(n3 > n1);
         let n4 = UInt::from(0);
-        // transitivity
-        assert!(n4 < n1 && n1 > n4);
-        assert!(n4 < n3 && n3 > n4);
+        assert!(n4 < n1);
+        assert!(n4 < n3);
     }
 }
